@@ -1,10 +1,5 @@
 terraform {
-  backend "remote" {
-    organization = "hashicorp-learn"    
-    workspaces {
-      name = "learn-terraform-pipelines-k8s"
-    }
-  }
+  backend "remote" {}
 required_providers {
     google = {
       source  = "hashicorp/google"
@@ -14,8 +9,6 @@ required_providers {
 
 required_version = ">= 1.1.0"
 }
-
-
 
 provider "google" {
   project = var.google_project
