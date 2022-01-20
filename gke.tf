@@ -1,7 +1,7 @@
 data "google_compute_zones" "available" {}
 
 resource "google_container_cluster" "engineering" {
-  name     = var.cluster_name
+  name     = local.name
   location = data.google_compute_zones.available.names.0
 
   # We can't create a cluster with no node pool defined, but we want to only use
@@ -9,9 +9,9 @@ resource "google_container_cluster" "engineering" {
   # node pool and immediately delete it.
   remove_default_node_pool = true
   initial_node_count       = 1
-  
+
   ip_allocation_policy {}
-  
+
   lifecycle {
     ignore_changes = [node_pool, initial_node_count, resource_labels["asmv"], resource_labels["mesh_id"]]
   }
@@ -20,14 +20,13 @@ resource "google_container_cluster" "engineering" {
     create = "45m"
     update = "45m"
     delete = "45m"
-  } 
+  }
 }
 
 resource "google_container_node_pool" "engineering_preemptible_nodes" {
-  name     = "${var.cluster_name}-node-pool"
-  cluster  = google_container_cluster.engineering.name
-  location = data.google_compute_zones.available.names.0
-
+  name       = "${local.name}-node-pool"
+  cluster    = google_container_cluster.engineering.name
+  location   = data.google_compute_zones.available.names.0
   node_count = var.enable_consul_and_vault ? 5 : 3
 
   node_config {
@@ -43,8 +42,8 @@ resource "google_container_node_pool" "engineering_preemptible_nodes" {
       "https://www.googleapis.com/auth/monitoring",
     ]
   }
- 
-   lifecycle {
+
+  lifecycle {
     ignore_changes = [initial_node_count]
   }
 

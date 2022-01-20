@@ -1,6 +1,6 @@
 variable "region" {
   type        = string
-  default     = "us-central1"
+  default     = "europe-west2"
   description = "GCP region to deploy clusters."
 }
 
@@ -13,17 +13,6 @@ variable "cluster_name" {
 variable "google_project" {
   type        = string
   description = "Google Project to deploy cluster"
-}
-
-variable "username" {
-  type        = string
-  default     = "admin"
-  description = "Username for GKE clusters"
-}
-
-variable "password" {
-  type        = string
-  description = "Password for GKE clusters"
 }
 
 variable "enable_consul_and_vault" {
