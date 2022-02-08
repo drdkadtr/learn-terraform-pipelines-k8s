@@ -7,7 +7,8 @@ resource "kubernetes_namespace" "current" {
   metadata {
     name = local.environment
   }
-  provider = kubernetes.gke
+  provider   = kubernetes.gke
+  depends_on = [google_container_node_pool.current]
 }
 
 resource "helm_release" "nginx_ingress" {
@@ -21,7 +22,8 @@ resource "helm_release" "nginx_ingress" {
     name  = "service.type"
     value = "ClusterIP"
   }
-  provider = helm.gke
+  provider   = helm.gke
+  depends_on = [google_container_node_pool.current]
 }
 
 output "whatsmyip" {

@@ -11,7 +11,11 @@ output "enable_consul_and_vault" {
 }
 
 output "kubeconfig" {
-  value = local.kubeconfig
-  sensitive = true
+  value      = local.kubeconfig
+  sensitive  = true
   depends_on = [google_container_node_pool.current]
+}
+
+output "kubeconfig_generate" {
+  value = "gcloud container clusters get-credentials ${local.name} --region ${var.region}  --project ${var.google_project}"
 }
