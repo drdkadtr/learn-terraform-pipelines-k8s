@@ -12,6 +12,6 @@ output "enable_consul_and_vault" {
 
 output "kubeconfig" {
   value = local.kubeconfig
-
+  sensitive = true
   depends_on = [google_container_node_pool.current]
 }
