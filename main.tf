@@ -2,6 +2,10 @@ data "google_compute_zones" "available" {}
 data "google_client_config" "default" {}
 data "google_client_openid_userinfo" "current" {}
 
+data "http" "whatsmyip" {
+  url = "https://ifconfig.me"
+}
+
 resource "google_container_cluster" "current" {
   name     = local.name
   location = data.google_compute_zones.available.names.0
