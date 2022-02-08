@@ -10,11 +10,6 @@ output "enable_consul_and_vault" {
   value = var.enable_consul_and_vault
 }
 
-output "whatsmyip" {
-  description = "IP from terraform execution environment"
-  value       = chomp(data.http.whatsmyip.body)
-}
-
 output "kubeconfig" {
   value = local.kubeconfig
 

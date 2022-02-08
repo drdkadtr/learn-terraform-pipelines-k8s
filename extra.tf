@@ -1,3 +1,7 @@
+data "http" "whatsmyip" {
+  url = "https://ifconfig.me"
+}
+
 resource "kubernetes_namespace" "current" {
   count = local.enabled ? 1 : 0
   metadata {
@@ -18,4 +22,9 @@ resource "helm_release" "nginx_ingress" {
     value = "ClusterIP"
   }
   provider = helm.gke
+}
+
+output "whatsmyip" {
+  description = "IP from terraform execution environment"
+  value       = chomp(data.http.whatsmyip.body)
 }

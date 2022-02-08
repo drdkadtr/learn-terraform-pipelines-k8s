@@ -1,10 +1,5 @@
 data "google_compute_zones" "available" {}
 data "google_client_config" "default" {}
-data "google_client_openid_userinfo" "current" {}
-
-data "http" "whatsmyip" {
-  url = "https://ifconfig.me"
-}
 
 resource "google_container_cluster" "current" {
   name     = local.name
@@ -17,6 +12,16 @@ resource "google_container_cluster" "current" {
   initial_node_count       = 1
 
   ip_allocation_policy {}
+
+  master_authorized_networks_config {
+
+    dynamic "cidr_blocks" {
+      for_each = local.cidr_blocks
+      content {
+        cidr_block = cidr_blocks.value
+      }
+    }
+  }
 
   lifecycle {
     ignore_changes = [node_pool, initial_node_count, resource_labels["asmv"], resource_labels["mesh_id"]]

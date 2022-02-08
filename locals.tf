@@ -2,7 +2,8 @@ locals {
   environment = "dev"
   enabled     = local.environment == "dev" ? false : true
 
-  name = coalesce(var.cluster_name, terraform.workspace)
+  name        = coalesce(var.cluster_name, terraform.workspace)
+  cidr_blocks = sort(compact(concat(local.scalr_ips, var.extra_cidr_blocks)))
 
   template_vars = {
     cluster_name     = google_container_cluster.current.name

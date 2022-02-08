@@ -19,3 +19,9 @@ variable "enable_consul_and_vault" {
   default     = false
   description = "Enable consul and vault for the secrets cluster"
 }
+
+variable "extra_cidr_blocks" {
+  type        = any
+  default     = []
+  description = "Your cidr with access to cluster"
+}
