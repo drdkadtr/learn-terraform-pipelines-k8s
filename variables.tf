@@ -6,7 +6,6 @@ variable "region" {
 
 variable "cluster_name" {
   type        = string
-  default     = "tfc-pipelines"
   description = "Name of cluster."
 }
 

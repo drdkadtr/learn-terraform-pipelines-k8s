@@ -1,6 +1,8 @@
 data "google_compute_zones" "available" {}
+data "google_client_config" "default" {}
+data "google_client_openid_userinfo" "current" {}
 
-resource "google_container_cluster" "engineering" {
+resource "google_container_cluster" "current" {
   name     = local.name
   location = data.google_compute_zones.available.names.0
 
@@ -18,14 +20,14 @@ resource "google_container_cluster" "engineering" {
 
   timeouts {
     create = "45m"
-    update = "45m"
+    update = "60m"
     delete = "45m"
   }
 }
 
-resource "google_container_node_pool" "engineering_preemptible_nodes" {
+resource "google_container_node_pool" "current" {
   name       = "${local.name}-node-pool"
-  cluster    = google_container_cluster.engineering.name
+  cluster    = google_container_cluster.current.name
   location   = data.google_compute_zones.available.names.0
   node_count = var.enable_consul_and_vault ? 5 : 3
 
@@ -49,22 +51,15 @@ resource "google_container_node_pool" "engineering_preemptible_nodes" {
 
   timeouts {
     create = "45m"
-    update = "45m"
+    update = "60m"
     delete = "45m"
   }
 }
 
-data "template_file" "kubeconfig" {
-  template = file("${path.module}/kubeconfig-template.yaml")
-
-  vars = {
-    context_name    = local.name
-    cluster_name    = google_container_cluster.engineering.name
-    user_name       = google_container_cluster.engineering.master_auth[0].username
-    user_password   = google_container_cluster.engineering.master_auth[0].password
-    endpoint        = google_container_cluster.engineering.endpoint
-    cluster_ca      = google_container_cluster.engineering.master_auth[0].cluster_ca_certificate
-    client_cert     = google_container_cluster.engineering.master_auth[0].client_certificate
-    client_cert_key = google_container_cluster.engineering.master_auth[0].client_key
+resource "kubernetes_namespace" "current" {
+  count = local.enable_ns ? 1 : 0
+  metadata {
+    name = local.environment
   }
+  provider = kubernetes.gke
 }
