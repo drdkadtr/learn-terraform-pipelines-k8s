@@ -1,7 +1,4 @@
 locals {
-  environment = "dev"
-  enabled     = local.environment == "dev" ? true : false
-
   name        = coalesce(var.cluster_name, terraform.workspace)
   cidr_blocks = sort(compact(concat(local.scalr_ips, var.extra_cidr_blocks)))
 

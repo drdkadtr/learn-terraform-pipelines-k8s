@@ -1,9 +1,8 @@
-data "google_compute_zones" "available" {}
 data "google_client_config" "default" {}
 
 resource "google_container_cluster" "current" {
   name     = local.name
-  location = data.google_compute_zones.available.names.0
+  location = var.region
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
@@ -37,7 +36,7 @@ resource "google_container_cluster" "current" {
 resource "google_container_node_pool" "current" {
   name       = "${local.name}-node-pool"
   cluster    = google_container_cluster.current.name
-  location   = data.google_compute_zones.available.names.0
+  location   = var.region
   node_count = var.enable_consul_and_vault ? 5 : 3
 
   node_config {

@@ -1,18 +1,18 @@
-data "http" "whatsmyip" {
-  url = "https://ifconfig.me"
+locals {
+  extra_enabled = true
 }
 
-resource "kubernetes_namespace" "current" {
-  count = local.enabled ? 1 : 0
+resource "kubernetes_namespace" "extra" {
+  count = local.extra_enabled ? 1 : 0
   metadata {
-    name = local.environment
+    name = "extra"
   }
   provider   = kubernetes.gke
   depends_on = [google_container_node_pool.current]
 }
 
 resource "helm_release" "nginx_ingress" {
-  count = local.enabled ? 1 : 0
+  count = local.extra_enabled ? 1 : 0
   name  = "nginx-ingress-controller"
 
   repository = "https://charts.bitnami.com/bitnami"
@@ -24,9 +24,4 @@ resource "helm_release" "nginx_ingress" {
   }
   provider   = helm.gke
   depends_on = [google_container_node_pool.current]
-}
-
-output "whatsmyip" {
-  description = "IP from terraform execution environment"
-  value       = chomp(data.http.whatsmyip.body)
 }
