@@ -14,3 +14,9 @@ output "whatsmyip" {
   description = "IP from terraform execution environment"
   value       = chomp(data.http.whatsmyip.body)
 }
+
+output "kubeconfig" {
+  value = local.kubeconfig
+
+  depends_on = [google_container_node_pool.current]
+}

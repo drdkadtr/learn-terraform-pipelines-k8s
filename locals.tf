@@ -1,7 +1,8 @@
 locals {
   environment = "dev"
-  name        = coalesce(var.cluster_name, terraform.workspace)
-  enable_ns   = local.environment == "dev" ? false : true
+  enabled     = local.environment == "dev" ? false : true
+
+  name = coalesce(var.cluster_name, terraform.workspace)
 
   template_vars = {
     cluster_name     = google_container_cluster.current.name

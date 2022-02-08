@@ -59,24 +59,3 @@ resource "google_container_node_pool" "current" {
     delete = "45m"
   }
 }
-
-resource "kubernetes_namespace" "current" {
-  count = local.enable_ns ? 1 : 0
-  metadata {
-    name = local.environment
-  }
-  provider = kubernetes.gke
-}
-
-resource "helm_release" "nginx_ingress" {
-  name = "nginx-ingress-controller"
-
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "nginx-ingress-controller"
-
-  set {
-    name  = "service.type"
-    value = "ClusterIP"
-  }
-  provider = helm.gke
-}
