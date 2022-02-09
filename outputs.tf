@@ -1,20 +1,31 @@
-output "google" {
+output "project_id" {
   description = "Shared terraform remote state"
   sensitive   = true
-  value = {
-    project_id = google_container_cluster.current.project
-    region     = var.region
-  }
+  value       = google_container_cluster.current.project
 }
 
-output "kubernetes" {
+output "region" {
   description = "Shared terraform remote state"
   sensitive   = true
-  value = {
-    host                   = "https://${google_container_cluster.current.endpoint}"
-    cluster_ca_certificate = base64decode(google_container_cluster.current.master_auth[0].cluster_ca_certificate, )
-    token                  = data.google_client_config.default.access_token
-  }
+  value       = var.region
+}
+
+output "host" {
+  description = "Shared terraform remote state"
+  sensitive   = true
+  value       = "https://${google_container_cluster.current.endpoint}"
+}
+
+output "cluster_ca_certificate" {
+  description = "Shared terraform remote state"
+  sensitive   = true
+  value       = base64decode(google_container_cluster.current.master_auth[0].cluster_ca_certificate, )
+}
+
+output "token" {
+  description = "Shared terraform remote state"
+  sensitive   = true
+  value       = data.google_client_config.default.access_token
 }
 
 output "control_flow" {
@@ -28,12 +39,3 @@ output "kubeconfig_generate" {
   description = "Generate GKE connection string"
   value       = "gcloud container clusters get-credentials ${local.name} --region ${var.region}  --project ${var.google_project}"
 }
-
-/*
-output "kubeconfig" {
-  value      = local.kubeconfig
-  sensitive  = true
-  depends_on = [google_container_node_pool.current]
-}
-*/
-
